@@ -212,3 +212,48 @@ def process_lock_print(l,i):
 
 
 #------------------------------------------------------------------------------------------
+#signal
+# import signal
+# import os
+# import time
+
+# break_flag=False
+# def receive_signal(signum, stack):
+#     global break_flag
+#     print 'Received:', signum
+#     break_flag=True
+#
+# # 注册信号处理程序
+# signal.signal(signal.SIGINT, receive_signal)
+# signal.signal(signal.SIGTERM, receive_signal)
+#
+# # 打印这个进程的PID方便使用kill传递信号
+#
+# print 'My PID is:', os.getpid()
+#
+# # 等待信号，有信号发生时则调用信号处理程序
+# while True:
+#     if break_flag:
+#         break;
+#     print 'Waiting...'
+#     time.sleep(3)
+
+
+#用信号终止进程
+# from multiprocessing import Process
+# import os
+# import signal
+# import time
+# def loop():
+#     while True:
+#         i=1^1
+#
+# class MyProcess(Process):
+#     def __init__(self):
+#         super(MyProcess,self).__init__()
+#     def run(self):
+#         loop()
+# p=MyProcess()
+# p.start()
+# time.sleep(3)
+# os.kill(p.pid,signal.SIGTERM)

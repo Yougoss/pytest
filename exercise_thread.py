@@ -147,3 +147,6 @@ for p in pro_list:
     p.setDaemon(True)
     p.start()
 time.sleep(5)
+#---------------------------------------------------------------------------------------------
+#threadlocal
+from threading import local
