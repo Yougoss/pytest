@@ -1,6 +1,8 @@
 from threading import current_thread
-from thread_local_copy import local
+# from thread_local_copy import local
+from my_thread_local import local
 import threading,time
+lock = threading.Lock()
 data=local()
 # key=local.__getattribute__(data,'_local__key')
 # print key
@@ -11,7 +13,9 @@ def thread_info(n):
     else:
         info='%s'%n
     data.name="Thread_%s"%info
+    lock.acquire()
     print data.__dict__,data.name
+    lock.release()
     # del data.name
     # print data.__dict__
 
@@ -27,9 +31,6 @@ for t in threads:
     t.start()
 for t in threads:
     t.join()
-
-
-
 
 
 

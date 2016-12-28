@@ -215,7 +215,7 @@ class local(_localbase):
         lock = object.__getattribute__(self, '_local__lock')
         lock.acquire()
         try:
-            #把current_thread().__dict__中的键值对赋值给当前local实例
+            #使当前实例的__dict__指向current_thread().__dict__
             _patch(self)
             #把当前设置的键值对保存在实例的__dict__中
             return object.__setattr__(self, name, value)
