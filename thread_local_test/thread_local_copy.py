@@ -1,3 +1,4 @@
+#coding:utf-8
 """Thread-local objects.
 
 (Note that this module provides a Python version of the threading.local
@@ -151,24 +152,32 @@ class _localbase(object):
     def __new__(cls, *args, **kw):
         self = object.__new__(cls)
         key = '_local__key', 'thread.local.' + str(id(self))
+        #给此类实例添加属性_local__key，_local__args，_local__lock
         object.__setattr__(self, '_local__key', key)
         object.__setattr__(self, '_local__args', (args, kw))
         object.__setattr__(self, '_local__lock', RLock())
 
+        #(args or kw)判断创建cls(即local)的实例时是否有参数
+        #(cls.__init__ is object.__init__)判断cls(即local)是否重写了__init__方法
+        #即此句意思为如果有参数，并且没有覆写__init__方法时抛出不支持初始化参数的方法
         if (args or kw) and (cls.__init__ is object.__init__):
             raise TypeError("Initialization arguments are not supported")
 
         # We need to create the thread dict in anticipation of
         # __init__ being called, to make sure we don't call it
         # again ourselves.
+        #拿到对象的__dict__属性,__dict__属性会保存当前对象的部分属性（obj.name = value 赋值的都会放进对象的__dict__中）
         dict = object.__getattribute__(self, '__dict__')
+        #在当前线程对象(即创建此实例的线程)的__dict__中存入 {此实例的id:此实例的__dict__} 的键值对
         current_thread().__dict__[key] = dict
 
         return self
 
 def _patch(self):
+    #将键值对从线程的__dict__中取出，存入local实例的__dict__中
     key = object.__getattribute__(self, '_local__key')
     d = current_thread().__dict__.get(key)
+    #对于那些第一次访问ThreadLocal变量的线程来说，需要创建一个空的字典来保存私有数据，然后还要调用该变量的初始化函数。
     if d is None:
         d = {}
         current_thread().__dict__[key] = d
@@ -177,14 +186,17 @@ def _patch(self):
         # we have a new instance dict, so call out __init__ if we have
         # one
         cls = type(self)
+        #如果覆写了__init__方法，则需要重新用参数初始化
         if cls.__init__ is not object.__init__:
             args, kw = object.__getattribute__(self, '_local__args')
             cls.__init__(self, *args, **kw)
+            pass
+    #非第一次访问
     else:
+        #把current_thread().__dict__中的键值对赋值给当前local实例的__dict__中
         object.__setattr__(self, '__dict__', d)
 
 class local(_localbase):
-
     def __getattribute__(self, name):
         lock = object.__getattribute__(self, '_local__lock')
         lock.acquire()
@@ -195,6 +207,7 @@ class local(_localbase):
             lock.release()
 
     def __setattr__(self, name, value):
+        #实例的__dict__为只读，不能修改
         if name == '__dict__':
             raise AttributeError(
                 "%r object attribute '__dict__' is read-only"
@@ -202,7 +215,9 @@ class local(_localbase):
         lock = object.__getattribute__(self, '_local__lock')
         lock.acquire()
         try:
+            #把current_thread().__dict__中的键值对赋值给当前local实例
             _patch(self)
+            #把当前设置的键值对保存在实例的__dict__中
             return object.__setattr__(self, name, value)
         finally:
             lock.release()
