@@ -19,10 +19,9 @@ def thread_info(n):
     # del data.name
     # print data.__dict__
 
-print '----------------------------------------------'
+print '-'*100
 thread_info(1)
-print '----------------------------------------------'
-time.sleep(1)
+print '-'*100
 threads=[]
 for i in range(2,10):
     t=threading.Thread(target=thread_info,args=(i,),name='Thread-%s'%i)
@@ -32,7 +31,7 @@ for t in threads:
 for t in threads:
     t.join()
 
-
+print data._local__lock
 
 
 
