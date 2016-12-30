@@ -153,6 +153,7 @@ class _localbase(object):
         self = object.__new__(cls)
         key = '_local__key', 'thread.local.' + str(id(self))
         #给此类实例添加属性_local__key，_local__args，_local__lock
+        #属性的名字命名格式为local的私有变量的格式
         object.__setattr__(self, '_local__key', key)
         object.__setattr__(self, '_local__args', (args, kw))
         object.__setattr__(self, '_local__lock', RLock())
