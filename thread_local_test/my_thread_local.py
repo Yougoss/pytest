@@ -237,7 +237,7 @@ def _parse(self):
 
         cls = type(self)
         if cls.__init__ is not object.__init__:
-            args,kwargs = object.__getattribute__(self, '_local__args')
+            args, kwargs = object.__getattribute__(self, '_local__args')
             cls.__init__(self, *args, **kwargs)
     else:
         object.__setattr__(self, '__dict__', d)
