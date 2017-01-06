@@ -916,23 +916,23 @@ import re
 # print re_phone.match('010-12345').groups()
 
 # # 匹配多行
-single_line_str = "Return a 2-tuple containing (new_string, number)."
-
-multi_lines_str = """Return a 2-tuple containing (new_string, number).
-    new_string is the string obtained by replacing the leftmost
-    non-overlapping occurrences of the pattern in the source
-    string by the replacement repl.  number is the number of
-    substitutions that were made. repl can be either a string or a
-    callable; if a string, backslash escapes in it are processed.
-    If it is a callable, it's passed the match object and must
-    return a replacement string to be used."""
-
-re_multilines = re.compile(r'(new)_(string)')
-re_multilines2 = re.compile(r'(new)_(string)')
-
-print re_multilines.match(single_line_str)
-print re_multilines.search(multi_lines_str).groups()
-print re_multilines2.findall(multi_lines_str)
+# single_line_str = "Return a 2-tuple containing (new_string, number)."
+#
+# multi_lines_str = """Return a 2-tuple containing (new_string, number).
+#     new_string is the string obtained by replacing the leftmost
+#     non-overlapping occurrences of the pattern in the source
+#     string by the replacement repl.  number is the number of
+#     substitutions that were made. repl can be either a string or a
+#     callable; if a string, backslash escapes in it are processed.
+#     If it is a callable, it's passed the match object and must
+#     return a replacement string to be used."""
+#
+# re_multilines = re.compile(r'(new)_(string)')
+# re_multilines2 = re.compile(r'(new)_(string)')
+#
+# print re_multilines.match(single_line_str)
+# print re_multilines.search(multi_lines_str).groups()
+# print re_multilines2.findall(multi_lines_str)
 
 
 
@@ -941,18 +941,124 @@ print re_multilines2.findall(multi_lines_str)
 # re_mail = re.compile(r'^([\w\.\-\_]*)@(\w*)\.\w*$')
 # print re_mail.match('bill.gates@microsoft.com').groups()
 # -------------------------------------------------------------------------------------------------------------------
-# # collections
+# collections
 
-# #  namedtuple可以穿凿一个tuple的子类,可以命名类名和属性名,既可以通过角标取元素,也可以通过属性名取元素
+#  namedtuple可以穿凿一个tuple的子类,可以命名类名和属性名,既可以通过角标取元素,也可以通过属性名取元素
 
-# import collections
-# point = collections.namedtuple('Point',['x', 'y'])
+import collections
+# point = collections.namedtuple('Point', ['x', 'y'])
+# p = point(1, 2)
 # print point
-# p = point(1,2)
 # print p
-#
-# print isinstance(p, point)
-#
-# print p.x, p[0]
-# print p._asdict()['x']
+# print p.x, p.y
+# print p[0], p[1]
+# print p._asdict(), p._asdict()['x']
 # print p._replace(x=100)
+# print p
+
+# q = collections.deque(['a', 'b', 'c'])
+# print q
+# q.append('x')
+# q.extend(['y', 'z'])
+# print q
+# q.appendleft('1')
+# q.extendleft(['2', '3'])
+# print q
+# q.pop()
+# print q
+# q.popleft()
+# print q
+# q.append('1')
+# print q
+# q.remove('1')
+# print q
+# q.reverse()
+# print q
+# print q. count('y')
+
+# dd = collections.defaultdict(lambda: 'A keyerror happens')
+# print dd['a']
+
+
+# od = collections.OrderedDict()
+# od['x'] = 1
+# od['y'] = 2
+# od['z'] = 3
+# print od
+# print od.keys()
+#
+# d = dict()
+# d['x'] = 1
+# d['y'] = 2
+# d['z'] = 3
+# print d
+# print d.keys()
+
+
+class LastUpdatedOrderedDict(collections.OrderedDict):
+    def __init__(self, capacity):
+        super(LastUpdatedOrderedDict, self).__init__()
+        self._capacity = capacity
+
+    def __setitem__(self, key, value):
+        flag = 0 if key in self.keys() else 1
+        if self._capacity - flag < len(self):
+            last = self.popitem(last=False)
+        if not flag:
+            del self[key]
+            print 'set:', (key, value)
+        else:
+            print 'add:', (key, value)
+        super(LastUpdatedOrderedDict, self).__setitem__(key, value)
+
+
+# from collections import OrderedDict
+#
+# class LastUpdatedOrderedDict(OrderedDict):
+#
+#     def __init__(self, capacity):
+#         super(LastUpdatedOrderedDict, self).__init__()
+#         self._capacity = capacity
+#
+#     def __setitem__(self, key, value):
+#         containsKey = 1 if key in self else 0
+#         if len(self) - containsKey >= self._capacity:
+#             last = self.popitem(last=False)
+#             print 'remove:', last
+#         if containsKey:
+#             del self[key]
+#             print 'set:', (key, value)
+#         else:
+#             print 'add:', (key, value)
+#         OrderedDict.__setitem__(self, key, value)
+# luod = LastUpdatedOrderedDict(3)
+# luod['x'] = 1
+# print luod
+# luod['y'] = 2
+# print luod
+# luod['z'] = 3
+# print luod
+# luod['x'] = 4
+# print luod
+# luod['a'] = 5
+# print luod
+
+# c = collections.Counter('asdfaewgvcfewafarwf')
+# print c
+# print c['f']
+# print list(c.elements())
+# print c.most_common(3)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
