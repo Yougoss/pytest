@@ -16,8 +16,10 @@ def thread_info(n):
     lock.acquire()
     print data.__dict__,data.name
     lock.release()
-    # del data.name
-    # print data.__dict__
+    del data.name
+    lock.acquire()
+    print current_thread().name,data.__dict__
+    lock.release()
 
 print '-'*100
 thread_info(1)
@@ -32,7 +34,7 @@ for t in threads:
     t.join()
 
 print data._local__lock
-
+del data
 
 
 

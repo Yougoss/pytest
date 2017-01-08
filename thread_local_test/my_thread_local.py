@@ -108,58 +108,156 @@ thread_local思路:
 
 #-----------------------------------------------------------------------------------------------------------------------
 #第二次练习
+# class _local_base(object):
+#     __slots__ = ["_local__key", "_local__lock", "_local__args"]
+#
+#     def __new__(cls, *args, **kwargs):
+#         self = object.__new__(cls)
+#         key = str(id(self))
+#
+#         object.__setattr__(self, '_local__key', key)
+#         object.__setattr__(self, '_local__lock', RLock())
+#         object.__setattr__(self, '_local__args', (args, kwargs))
+#
+#         if (args or kwargs) and (cls.__init__ is object.__init__):
+#             raise TypeError("不支持传入参数")
+#
+#         d = object.__getattribute__(self, "__dict__")
+#         current_thread().__dict__[key] = d
+#
+#         return self
+#
+#
+# def _parse(self):
+#     key = object.__getattribute__(self, "_local__key")
+#     d = current_thread().__dict__.get(key)
+#     if d is None:
+#         d = {}
+#         current_thread().__dict__[key] = d
+#         object.__setattr__(self, "__dict__", d)
+#
+#         cls = type(self)
+#         if cls.__init__ is not object.__init__:
+#             args,kwargs = object.__getattribute__(self, "_local__args")
+#             cls.__init__(self,*args,**kwargs)
+#
+#     else:
+#         object.__setattr__(self, "__dict__", d)
+#
+#
+#
+# class local(_local_base):
+#
+#     # __args=([1,2],{})
+#     # def __init__(self, *args, **kwargs):
+#     #     for i in args:
+#     #         print i
+#
+#
+#     def __getattribute__(self, item):
+#         lock = object.__getattribute__(self, "_local__lock")
+#         lock.acquire()
+#         try:
+#             _parse(self)
+#             return object.__getattribute__(self,item)
+#         finally:
+#             lock.release()
+#
+#     def __setattr__(self, key, value):
+#         if key == '__dict__':
+#             raise ArithmeticError('%r 的__dict__为只读' % self.__class__.__name__)
+#         lock = object.__getattribute__(self, "_local__lock")
+#         lock.acquire()
+#         try:
+#             _parse(self)
+#             object.__setattr__(self, key, value)
+#         finally:
+#             lock.release()
+#
+#     def __delattr__(self, item):
+#         if key == '__dict__':
+#             raise ArithmeticError('%r 的__dict__为只读' % self.__class__.__name__)
+#         lock = object.__getattribute__(self, '_local__lock')
+#         lock.acquire()
+#         try:
+#             _parse(self)
+#             object.__delattr__(self,item)
+#         finally:
+#             lock.release()
+#
+#     def __del__(self):
+#         key = object.__getattribute__(self, '_local__key')
+#         try:
+#             threads = threading._enumerate()
+#         except:
+#             return
+#
+#         for t in threads:
+#             try:
+#                 __dict__ = t.__dict__
+#             except:
+#                 continue
+#
+#             if key in __dict__:
+#                 try:
+#                     del __dict__[key]
+#                 except KeyError:
+#                     pass
+
+#-----------------------------------------------------------------------------------------------------------------------
+#第三次练习
+
 class _local_base(object):
-    __slots__ = ["_local__key", "_local__lock", "_local__args"]
+    __slots__ = ['_local__key', '_local__args', '_local__lock']
 
     def __new__(cls, *args, **kwargs):
         self = object.__new__(cls)
         key = str(id(self))
 
         object.__setattr__(self, '_local__key', key)
+        object.__setattr__(self, '_local__args', (args,kwargs))
         object.__setattr__(self, '_local__lock', RLock())
-        object.__setattr__(self, '_local__args', (args, kwargs))
 
         if (args or kwargs) and (cls.__init__ is object.__init__):
-            raise TypeError("不支持传入参数")
+            raise TypeError('不支持传入参数')
 
-        d = object.__getattribute__(self, "__dict__")
+        d = object.__getattribute__(self, '__dict__')
         current_thread().__dict__[key] = d
 
         return self
 
-
 def _parse(self):
-    key = object.__getattribute__(self, "_local__key")
+    key = object.__getattribute__(self, '_local__key')
     d = current_thread().__dict__.get(key)
+
     if d is None:
         d = {}
         current_thread().__dict__[key] = d
-        object.__setattr__(self, "__dict__", d)
+        object.__setattr__(self, '__dict__', d)
 
         cls = type(self)
         if cls.__init__ is not object.__init__:
-            args,kwargs = object.__getattribute__(self, "_local__args")
-            cls.__init__(self,*args,**kwargs)
-
+            args, kwargs = object.__getattribute__(self, '_local__args')
+            cls.__init__(self, *args, **kwargs)
     else:
-        object.__setattr__(self, "__dict__", d)
-
+        object.__setattr__(self, '__dict__', d)
 
 
 class local(_local_base):
     def __getattribute__(self, item):
-        lock = object.__getattribute__(self, "_local__lock")
+        lock = object.__getattribute__(self, '_local__lock')
         lock.acquire()
         try:
             _parse(self)
-            return object.__getattribute__(self,item)
+            return object.__getattribute__(self, item)
         finally:
             lock.release()
 
     def __setattr__(self, key, value):
         if key == '__dict__':
-            raise ArithmeticError('%r 的__dict__为只读' % self.__class__.__name__)
-        lock = object.__getattribute__(self, "_local__lock")
+            raise AttributeError('%r 的__dict__为只读'% self.__class__.__name__)
+
+        lock = object.__getattribute__(self, '_local__lock')
         lock.acquire()
         try:
             _parse(self)
@@ -168,18 +266,21 @@ class local(_local_base):
             lock.release()
 
     def __delattr__(self, item):
-        if key == '__dict__':
-            raise ArithmeticError('%r 的__dict__为只读' % self.__class__.__name__)
+        if item == '__dict__':
+            raise AttributeError('%r 的__dict__为只读'% self.__class__.__name__)
         lock = object.__getattribute__(self, '_local__lock')
         lock.acquire()
         try:
             _parse(self)
-            object.__delattr__(self,item)
+            object.__delattr__(self, item)
         finally:
             lock.release()
 
+
+
     def __del__(self):
         key = object.__getattribute__(self, '_local__key')
+
         try:
             threads = threading._enumerate()
         except:
@@ -187,17 +288,16 @@ class local(_local_base):
 
         for t in threads:
             try:
-                __dict__ = t.__dict__
-            except:
+                d = t.__dict__
+            except AttributeError:
                 continue
 
-            if key in __dict__:
+            if key in d:
                 try:
-                    del __dict__[key]
+                    del d[key]
                 except KeyError:
                     pass
-
-
+        print "%r has been deleted"%self
 
 
 
