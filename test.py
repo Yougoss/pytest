@@ -995,21 +995,21 @@ import collections
 # print d.keys()
 
 
-class LastUpdatedOrderedDict(collections.OrderedDict):
-    def __init__(self, capacity):
-        super(LastUpdatedOrderedDict, self).__init__()
-        self._capacity = capacity
-
-    def __setitem__(self, key, value):
-        flag = 0 if key in self.keys() else 1
-        if self._capacity - flag < len(self):
-            last = self.popitem(last=False)
-        if not flag:
-            del self[key]
-            print 'set:', (key, value)
-        else:
-            print 'add:', (key, value)
-        super(LastUpdatedOrderedDict, self).__setitem__(key, value)
+# class LastUpdatedOrderedDict(collections.OrderedDict):
+#     def __init__(self, capacity):
+#         super(LastUpdatedOrderedDict, self).__init__()
+#         self._capacity = capacity
+#
+#     def __setitem__(self, key, value):
+#         flag = 0 if key in self.keys() else 1
+#         if self._capacity - flag < len(self):
+#             last = self.popitem(last=False)
+#         if not flag:
+#             del self[key]
+#             print 'set:', (key, value)
+#         else:
+#             print 'add:', (key, value)
+#         super(LastUpdatedOrderedDict, self).__setitem__(key, value)
 
 
 # from collections import OrderedDict
@@ -1048,6 +1048,139 @@ class LastUpdatedOrderedDict(collections.OrderedDict):
 # print c['f']
 # print list(c.elements())
 # print c.most_common(3)
+
+# -------------------------------------------------------------------------------------------------------------------
+# base64
+import base64
+#
+# 使用base64编码的原因:
+# ascii 0~31和127(共33个)为控制字符或通信专用字符(为不可见字符),32~126(共95个)是可见字符,后128称为扩展ascii码
+# 对于不可见字符,不同的设备可能会有不同的处理方式,对于网络传输(传输中含有图片,音频等文件,这些文件转成二进制传输通常含有不可见字符)
+# 为了不可见字符不被错误的处理,就先把数据用base64编码,全部变为可见字符
+#
+# base64编码的思路:
+# 将数据转为二进制后,每三个字节为一组,一个字节8bit位.共24位.将24位分为4份,每份6位.然后在6位的前面补两个0,则变成了4个字节,每个字节最高的
+# 两位为0(即不超过63).然后对应base64的编码表全转为可见字符.如果数据不为3字节的倍数,将余数(1或2)的比特位用0补齐(8或16bit补成12或18bit)
+# 转为2到3个字节的base编码表的字符,剩下的用=补齐(base64编码好的文件字节数位4的倍数)
+#
+# base64编码表:
+# 0~25: A~Z,  26~51: a~z, 52~61: 0~9,   62: +,  63: /
+#
+# 示例:
+# 数据字符串:         ly
+# 转成ascii:         108 121
+# 转成二进制:         0110 1100  0111 1001
+# 每6bit在前面加00:   0001 1011  0000 0111  001001
+# 位数不足用0补齐:     0001 1011  0000 0111  00100100
+# 转成十进制:        27  7   36
+# 转成base64:       b  H  k
+# 不足4位用=补齐:     bHk=
+#
+# 验证:
+# print 'ly base64 ', base64.b64encode('ly')
+# 对base64编码的定位:
+# 不算安全领域的加密解密, 不能直接一眼认出
+# 编解码速度非常快
+# 适合用于http, mime协议下快速传输数据
+
+# s_base64 = base64.b64encode(r'binary\x00string')
+# print s_base64
+# print base64.b64encode('binary\\x00string')
+# s_ascii = base64.b64decode(s_base64)
+# print s_ascii
+
+
+# def safe_base64_decode(s):
+#     while len(s) % 4 != 0:
+#         s += '='
+#     return base64.b64decode(s)
+#
+# assert b'abcd' == safe_base64_decode(b'YWJjZA=='), safe_base64_decode('YWJjZA==')
+# assert b'abcd' == safe_base64_decode(b'YWJjZA'), safe_base64_decode('YWJjZA')
+# print('Pass')
+
+# -------------------------------------------------------------------------------------------------------------------
+# struct
+# 大端,小端字节序.网络序都是大端字节序,主机序既有大端也有小端
+# 大端:高位字节放地址低位
+# 小端:低位字节放地址低位
+# struct用处时将python数据类型和二进制数据类型的转换(用于和其他平台进行交互)
+'''
+struct常用的格式
+format                      c中数据类型                  python中数据类型                 标准大小
+c                           char                        长度为1的字符串                  1
+b                           signed char                 整型                            1
+B                           unsigned char               整型                            1
+?                           _Bool                       bool                            1
+h                           short                       整型                             2
+H                           unsigned int                整型                             2
+i                           int                         整型                             4
+I                           unsigned int                整型                             4
+l                           long                        整型                             4
+L                           unsigned long               整型                             4
+q                           long long                   整型                             8
+Q                           unsigned long long          整型                             8
+f                           float                       浮点                             4
+d                           double                      浮点                             8
+s                           char[]                      字符串
+p                           char[]                      字符串
+P                           void *                      整型
+
+'''
+
+# n = 10240099
+# b1 = (n & 0xff000000) >> 24
+# b2 = (n & 0xff0000) >> 16
+# b3 = (n & 0xff00) >> 8
+# b4 = (n & 0xff) >> 0
+# l = [b1, b2, b3, b4]
+# cl = map(chr, l)
+# print l, cl
+# print ''.join(cl), repr(''.join(cl))
+#
+# import struct
+# print struct.pack('>I', 10240099), repr(struct.pack('>I', 10240099))
+# print struct.pack('<I', 10240099), repr(struct.pack('<I', 10240099))
+
+import os, struct
+abspath = os.path.abspath('.')
+img_path = os.path.join(abspath, 'img/bmp_test.bmp')
+with open(img_path, 'rb') as img:
+    s = img.read(30)
+    # print repr(s)
+    print struct.unpack('<ccIIIIIIHH', s)
+
+sb = '42 4d 96 05 13 00 00 00 00 00 36 00 00 00 28 00 00 00 7c 02 00 00 16 fe ff ff 01 00 20 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 3e ae 5b ff 3d aa 59 ff'
+sl = sb.split(' ')
+sl2 = []
+for s in sl:
+    s = hex(int(s, 16))
+    sl2.append(s)
+# print sl2
+
+
+img_path2 = os.path.join(abspath, 'img/Picture1.bmp')
+with open(img_path2, 'rb') as img:
+    s = img.read(30)
+    # print repr(s)
+    print struct.unpack('<ccIIIIIIHH', s)
+
+img_path3 = os.path.join(abspath, 'img/Picture2.bmp')
+with open(img_path3, 'rb') as img:
+    s = img.read(30)
+    # print repr(s)
+    print struct.unpack('<ccIIIIIIHH', s)
+
+
+img_path4 = os.path.join(abspath, 'img/QQ截图asdfasdfa.bmp')
+with open(img_path4, 'rb') as img:
+    s = img.read(30)
+    # print repr(s)
+    print struct.unpack('<ccIIIIIIHH', s)
+
+
+
+
 
 
 
