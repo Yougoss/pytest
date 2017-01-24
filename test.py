@@ -29,7 +29,7 @@
 # Student2.score=95
 # print s3.age,s4.age
 # print s3.score,s4.score
-#
+# #
 # s3.weight="80kg"
 
 # __slots__用tuple定义,类创建的实例不允许绑定不在tuple中的属性(类本身可以添加属性)
@@ -1141,47 +1141,667 @@ P                           void *                      整型
 # import struct
 # print struct.pack('>I', 10240099), repr(struct.pack('>I', 10240099))
 # print struct.pack('<I', 10240099), repr(struct.pack('<I', 10240099))
-
-import os, struct
-abspath = os.path.abspath('.')
-img_path = os.path.join(abspath, 'img/bmp_test.bmp')
-with open(img_path, 'rb') as img:
-    s = img.read(30)
-    # print repr(s)
-    print struct.unpack('<ccIIIIIIHH', s)
-
-sb = '42 4d 96 05 13 00 00 00 00 00 36 00 00 00 28 00 00 00 7c 02 00 00 16 fe ff ff 01 00 20 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 3e ae 5b ff 3d aa 59 ff'
-sl = sb.split(' ')
-sl2 = []
-for s in sl:
-    s = hex(int(s, 16))
-    sl2.append(s)
+# import binascii
+# import os, struct
+# abspath = os.path.abspath('.')
+# img_path = os.path.join(abspath, 'img/bmp_test.bmp')
+# with open(img_path, 'rb') as img:
+#     s = img.read(30)
+#     print binascii.b2a_hex(s)
+#     print struct.unpack('<ccIIIIIIHH', s)
+# sb = '42 4d 96 05 13 00 00 00 00 00 36 00 00 00 28 00 00 00 7c 02 00 00 16 fe ff ff 01 00 20 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 3e ae 5b ff 3d aa 59 ff'
+# sl = sb.split(' ')
+# sl2 = []
+# for s in sl:
+#     s = hex(int(s, 16))
+#     sl2.append(s)
 # print sl2
+#
+# print repr('你好')
+# print '\xe4\xbd\xa0'
+#
+# img_path2 = os.path.join(abspath, 'img/Picture1.bmp')
+# with open(img_path2, 'rb') as img:
+#     s = img.read(30)
+#     print repr(s)
+#     print struct.unpack('<ccIIIIIIHH', s)
+#
+# img_path3 = os.path.join(abspath, 'img/Picture2.bmp')
+# with open(img_path3, 'rb') as img:
+#     s = img.read(30)
+#     print repr(s)
+#     print struct.unpack('<ccIIIIIIHH', s)
+#
+#
+# img_path4 = os.path.join(abspath, 'img/QQ截图asdfasdfa.bmp')
+# with open(img_path4, 'rb') as img:
+#     s = img.read(30)
+#     print repr(s)
+#     print struct.unpack('<ccIIIIIIHH', s)
+
+# -------------------------------------------------------------------------------------------------------------------
+# hashlib
+# 常见摘要算法有   md5, sha1, sha256, sha512 使用方法类似越后面的越安全,但是越慢
+# 摘要算法不算加密算法,因为不能反推明文,只能用于防篡改.
+# 摘要算法的单向性使其可以再不储存明文口令的情况下验证用户口令
+
+# import hashlib
+# md5 = hashlib.md5()
+# md5.update('how to use md5 in python hashlib?')
+# print (md5.hexdigest())
+#
+#
+# db = {}
+#
+#
+# def get_md5(s):
+#     md5 = hashlib.md5()
+#     md5.update(s)
+#     return md5.hexdigest()
+#
+#
+# def register(name, password):
+#     db[name] = get_md5(name + 'the salt' + password)
+#
+#
+# def login(name, password):
+#     if db[name] == get_md5(name + 'the salt' + password):
+#         print '%s login success' % name
+#     else:
+#         print '%s password error' % name
+#
+#
+# register('xly', '12345')
+# register('xxx', '12345')
+#
+# login('xxx', '1234')
+# login('xxx', '12345')
+# print db
+# -------------------------------------------------------------------------------------------------------------------
+# itertools
+
+# import itertools
+# for key, group in itertools.groupby('AaaBBbcCAAa', lambda x: x.lower()):
+#     print(key, list(group))
+
+# -------------------------------------------------------------------------------------------------------------------
+# XML解析
+# from xml.parsers.expat import ParserCreate
+#
+#
+# # sax解析xml
+# class DefaultSaxHandler(object):
+#     def start_element(self, name, attrs):
+#         print('sax:start_element: %s, attrs: %s' % (name, str(attrs)))
+#
+#     def end_element(self, name):
+#         print('sax:end_element: %s' % name)
+#
+#     def char_data(self, text):
+#         print('sax:char_data: %s' % text)
+#
+# xml = r'''<?xml version="1.0"?>
+# <ol>
+#     <li><a href="/python">Python</a></li>
+#     <li><a href="/ruby">Ruby</a></li>
+# </ol>
+# '''
+# handler = DefaultSaxHandler()
+# parser = ParserCreate()
+# parser.returns_unicode = True
+# parser.StartElementHandler = handler.start_element
+# parser.EndElementHandler = handler.end_element
+# parser.CharacterDataHandler = handler.char_data
+# parser.Parse(xml)
+#
+#
+# # 生成xml
+# def encode(s):
+#     return s.replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;')
+# L = list()
+# L.append(r'<?xml version="1.0"?>')
+# L.append(r'<root>')
+# L.append(encode('some & data'))
+# L.append(r'</root>')
+# print ''.join(L)
 
 
-img_path2 = os.path.join(abspath, 'img/Picture1.bmp')
-with open(img_path2, 'rb') as img:
-    s = img.read(30)
-    # print repr(s)
-    print struct.unpack('<ccIIIIIIHH', s)
+# import urllib
+# from xml.parsers.expat import ParserCreate
+# # 解析天气预报
+# # 百度天气
+# '''
+# 形如:
+# <CityWeatherResponse>
+#     <status>success</status>
+#     <currentCity>上海</currentCity>
+#     <results>
+#         <result>
+#         <date>周四 01月19日 (实时：8℃)</date>
+#         <dayPictureUrl>
+#         http://api.map.baidu.com/images/weather/day/yin.png
+#         </dayPictureUrl>
+#         <nightPictureUrl>
+#         http://api.map.baidu.com/images/weather/night/duoyun.png
+#         </nightPictureUrl>
+#         <weather>阴转多云</weather>
+#         <wind>北风微风</wind>
+#         <temperature>9 ~ 0℃</temperature>
+#         </result>
+#         <result>...</result>
+#         <result>...</result>
+#         <result>...</result>
+#     </results>
+# </CityWeatherResponse>
+#
+# '''
+# import re
+# xml = ''
+# try:
+#     page = urllib.urlopen('http://api.map.baidu.com/telematics/v2/weather?location=%E4%B8%8A%E6%B5%B7&ak=B8aced94da0b345579f481a1294c9094')
+#     xml = page.read()
+# finally:
+#     page.close()
+# # print xml
+#
+#
+# class BaiduWeatherSaxHandler(object):
+#     def __init__(self):
+#         self._weather = dict()
+#         self._count = 0
+#         self._current_element = ''
+#
+#     def start_element(self, name, attrs):
+#         if name == 'result':
+#             self._count += 1
+#             self._weather[self._count] = dict()
+#         self._current_element = name
+#
+#     def end_element(self, name):
+#         pass
+#
+#     def char_data(self, text):
+#         # 排除换行符和空白内容
+#         re_str = '^[\n|\s]+$'
+#         if self._current_element and not re.match(re_str, text) and self._weather:
+#             self._weather[self._count][self._current_element] = text
+#
+#     def show_weather(self):
+#         for v in self._weather.values():
+#             print v['date'], '\t'*(7-len(v['date'])), v['temperature'], v['weather'], v['wind']
+#
+# handler = BaiduWeatherSaxHandler()
+# parser = ParserCreate()
+#
+# parser.returns_unicode = True
+# parser.StartElementHandler = handler.start_element
+# parser.EndElementHandler = handler.end_element
+# parser.CharacterDataHandler = handler.char_data
+#
+#
+# parser.Parse(xml)
+#
+# handler.show_weather()
+#
+# # 中国天气网
+# '''
+# 形如:
+# <china dn="day">
+#     <city quName="黑龙江" pyName="heilongjiang" cityname="哈尔滨" state1="1" state2="0" stateDetailed="多云转晴" tem1="-12" tem2="-25" windState="西南风3-4级转北风小于3级"/>
+#     <city quName="吉林" pyName="jilin" cityname="长春" state1="1" state2="1" stateDetailed="多云" tem1="-10" tem2="-21" windState="西北风小于3级"/>
+#     <city quName="辽宁" pyName="liaoning" cityname="沈阳" state1="1" state2="1" stateDetailed="多云" tem1="-6" tem2="-18" windState="北风小于3级转3-4级"/>
+#     <city quName="海南" pyName="hainan" cityname="海口" state1="1" state2="3" stateDetailed="多云转阵雨" tem1="24" tem2="18" windState="东风转东北风3-4级"/>
+# </china>
+# '''
+#
+# china_xml = ''
+# try:
+#     page = urllib.urlopen('http://flash.weather.com.cn/wmaps/xml/china.xml')
+#     china_xml = page.read()
+# finally:
+#     page.close()
+#
+#
+# class ChinaWeatherSaxHandler(object):
+#     def __init__(self):
+#         self._weather = dict()
+#
+#     def start_element(self, name, attrs):
+#         if attrs.get('cityname'):
+#             self._weather[attrs['cityname']] = attrs
+#
+#     def end_element(self, name):
+#         pass
+#
+#     def char_data(self, text):
+#         pass
+#
+#     def show_weather(self):
+#         for v in self._weather.values():
+#             print v['cityname'] + '\t', v['tem2'] + '~' + v['tem1'] + '\t', v['stateDetailed'] + '\t', v['windState']
+#
+# handler = ChinaWeatherSaxHandler()
+# parser = ParserCreate()
+#
+# parser.returns_unicode = True
+# parser.StartElementHandler = handler.start_element
+# parser.EndElementHandler = handler.end_element
+# parser.CharacterDataHandler = handler.char_data
+#
+# parser.Parse(china_xml)# handler.show_weather()
 
-img_path3 = os.path.join(abspath, 'img/Picture2.bmp')
-with open(img_path3, 'rb') as img:
-    s = img.read(30)
-    # print repr(s)
-    print struct.unpack('<ccIIIIIIHH', s)
+# -------------------------------------------------------------------------------------------------------------------
+# 复习单例模式和__new__方法的参数以及ORM实现复习
+
+# class Singleton(object):
+#     def __new__(cls, *args, **kwargs):
+#         if not hasattr(cls, 'instance'):
+#             cls.instance = super(Singleton, cls).__new__(cls, *args, **kwargs)
+#         return cls.instance
+#
+#     def __init__(self, *args, **kwargs):
+#         # 单例模式__new__方法带参数的时候也要覆写__init__增加参数,否则报错
+#         pass
+#
+# s1 = Singleton()
+# s2 = Singleton()
+# s1.test = 'test1'
+# print s2.test
+
+# class Field(object):
+#     def __init__(self, name, column_type):
+#         self.name = name
+#         self.column_type = column_type
+#
+#     def __str__(self):
+#         return '<%s: %s>' % (self.name, self.column_type)
+#
+#
+# class IntegerField(Field):
+#     def __init__(self, name):
+#         super(IntegerField, self).__init__(name, 'bigint')
+#
+#
+# class StringField(Field):
+#     def __init__(self, name):
+#         super(StringField, self).__init__(name, 'varchar(120)')
+#
+#
+# class ModelMetaclass(type):
+#     def __new__(cls, name, bases, attrs):
+#         if cls == 'Model':
+#             return super(ModelMetaclass, cls).__new__(cls, name, bases, attrs)
+#         mapping = dict()
+#         for k, v in attrs.items():
+#             if isinstance(v, Field):
+#                 mapping[k] = v
+#         for k in mapping.keys():
+#             del attrs[k]
+#         attrs['__tablename__'] = name
+#         attrs['__mapping__'] = mapping
+#         return super(ModelMetaclass, cls).__new__(cls, name, bases, attrs)
+#
+#
+# class Model(object):
+#     __metaclass__ = ModelMetaclass
+#     d = dict()
+#
+#     def __init__(self, **kwargs):
+#         for k in (k for k in kwargs if k in self.__mapping__):
+#             self.d[k] = kwargs[k]
+#
+#     def save(self):
+#         field = []
+#         args = []
+#         for k, v in self.__mapping__.items():
+#             field.append(k)
+#             if isinstance(v, StringField):
+#                 args.append('"{0}"'.format(self.d[k]))
+#             elif isinstance(v, IntegerField):
+#                 args.append('{0}'.format(self.d[k]))
+#         sql = 'insert into %s (%s) value(%s)' % (self.__tablename__, ','.join(field), ','.join(args) )
+#         print sql
+#
+#
+# class User(Model):
+#     id = IntegerField('id')
+#     name = StringField('name')
+#     pswd = StringField('pswd')
+#
+#
+# u = User(id=123, name='xly', pswd='mypswd')
+# u.save()
+
+# object和type的__new__方法接收的参数不同
+# T.__new__(S, *more) S(T的子类)实例(实例可以是类也可以是类创建的对象)
+# class ObjectSubclass(dict):
+#     pass
+# o = dict.__new__(ObjectSubclass)
+# print isinstance(o, dict)
+#
+#
+# class TypeSubclass(type):
+#     pass
+#
+#
+# def hello():
+#     return 'hello'
+# #               type的子类       生成的类的名称   生成类创建对象的父类  类中定义的属性和方法
+# t = type.__new__(TypeSubclass, 'typesubclass', (dict,), dict(hello=hello))
+# print isinstance(t, TypeSubclass)
+# print isinstance(t, dict), isinstance(t(), dict)
+
+# -------------------------------------------------------------------------------------------------------------------
+# HTMLParser
+
+# HTML实体:
+# 在 HTML 中，某些字符是预留的。
+# 在 HTML 中不能使用小于号（<）和大于号（>），这是因为浏览器会误认为它们是标签。
+# 如果希望正确地显示预留字符，我们必须在 HTML 源代码中使用字符实体（character entities）
+# 字符实体的使用方法 &entity_name 或者  &#entity_number 或者 &#xhex_number(十六进制数字)
+# 都称为character reference,第一种称为 character entity reference ,后面两种称为 numeric character reference
+# 在html显示小于号  &lt          或者  &#60            或者 &#x3c
+
+'''
+
+解析HTML时,可以继承内置的HTMLParser类,覆写其中以handle_开头的函数
+
+handle_starttag:    处理开始标签,形如<xx>
+handle_endtag:      处理结束标签,形如</xx>
+handle_startendtag: 处理开始结束标签,形如<xx/>
+handle_data:        处理数据,即<xx>data</xx>间的数据
+handle_comment:     处理注释,形如<!--comment-->
+handle_entityref:   处理特殊字符,以#&开始的,一般为内码表现的字符
+handle_charref:     处理特殊字符,以&开始的,如&lt
+handle_decl:        处理<!开头的,形如<!DOCTYPE html>
+handle_pi:          处理形如<?instruction>
+
+'''
+# from HTMLParser import HTMLParser
+#
+# class MyHTMLParser(HTMLParser):
+#
+#     def handle_starttag(self, tag, attrs):
+#         print('<%s>' % tag)
+#
+#     def handle_endtag(self, tag):
+#         print('</%s>' % tag)
+#
+#     def handle_startendtag(self, tag, attrs):
+#         print('<%s/>' % tag)
+#
+#     def handle_data(self, data):
+#         print('data')
+#
+#     def handle_comment(self, data):
+#         print('<!-- -->')
+#
+#     def handle_entityref(self, name):
+#         print('&%s;' % name)
+#
+#     def handle_charref(self, name):
+#         print('&#%s;' % name)
+#
+# parser = MyHTMLParser()
+# parser.feed('<html><head></head><body><p>Some <a href=\"#\">html</a> tutorial...<br>END</p></body></html>')
+
+# urlopen经常打开失败,数据处理还没完成,暂时留着
+# import urllib
+# from HTMLParser import HTMLParser
+#
+# try:
+#     page = urllib.urlopen('https://www.python.org/events/python-events/')
+#     html = page.read()
+# finally:
+#     page.close()
+#
+# print html
+#
+# class MyHTMLParser(HTMLParser):
+#     # 经典类继承时__init__不能用super,而且self要作为__init__的第一个参数
+#     def __init__(self):
+#         self.enter_list = False
+#         self.tag_name = ''
+#         self.conference = dict()
+#         self.count = 0
+#         HTMLParser.__init__(self)
+#
+#     def handle_starttag(self, tag, attrs):
+#         for attr in attrs:
+#             if attr[0] == 'class' and attr[1] == 'list-recent-events menu':
+#                 self.tag_name = tag
+#                 self.enter_list = True
+#
+#             if self.enter_list and tag == 'li':
+#                 self.count += 1
+#                 self.conference[self.count] = dict()
+#
+#     def handle_endtag(self, tag):
+#         if self.tag_name and tag == self.tag_name:
+#             self.enter_list = False
+#             self.tag_name = ''
+#
+#     def handle_data(self, data):
+#         if self.enter_list:
+#             if self.lasttag == 'a':
+#                 if not self.conference[self.count].get('Title'):
+#                     self.conference[self.count]['Title'] = ''
+#                 self.conference[self.count]['Title'] += data.strip()
+#
+#     def handle_entityref(self, name):
+#         if self.enter_list and name == 'ndash':
+#             # print '-'
+#             pass
+#
+#
+# parser = MyHTMLParser()
+# parser.feed(html)
+#
+# print parser.conference
+
+# -------------------------------------------------------------------------------------------------------------------
+# python实现汉诺塔
+
+# def hanoi(n, start, end, medium):
+#     if n == 1:
+#         print '%s --> %s' % (start, end)
+#     elif n > 1:
+#         hanoi(n-1, start, medium, end)
+#         print '%s --> %s' % (start, end)
+#         hanoi(n-1, medium, end, start)
+# hanoi(3, 'A', 'C', 'B')
 
 
-img_path4 = os.path.join(abspath, 'img/QQ截图asdfasdfa.bmp')
-with open(img_path4, 'rb') as img:
-    s = img.read(30)
-    # print repr(s)
-    print struct.unpack('<ccIIIIIIHH', s)
+# def swap(l, i, j):
+#     temp = l[i]
+#     l[i] = l[j]
+#     l[j] = temp
+#
+#
+# def bubble_sort(l):
+#     for i in range(len(l)):
+#         for j in range(i, len(l)):
+#             if l[i] > l[j]:
+#                 swap(l, i, j)
+#
+#
+# def quick_sort(l, start, end):
+#     if start >= end:
+#         return l
+#     tag = l[start]
+#     left = start
+#     right = end
+#     while start < end:
+#         while start < end and l[end] >= tag:
+#             end -= 1
+#         l[start] = l[end]
+#         while start < end and l[start] <= tag:
+#             start += 1
+#         l[end] = l[start]
+#         quick_sort(l, left, end-1)
+#         quick_sort(l, start+1, right)
+#     return l
+#
+# l = [1561, 315, 684, 1654, 1651]
+# l2 = [3, 5, 4, 3, 2, 1, 1, 2, 3, 4, 5, 3]
+# bubble_sort(l)
+# print l
+#
+#
+# print quick_sort(l2, 0, len(l2)-1)
+
+# 10个数字分成两组各为5的数组,使他们和的差值最小
+# def diff(l1, l2):
+#     sum1 = 0
+#     sum2 = 0
+#     for i in l1:
+#         sum1 += i
+#     for i in l2:
+#         sum2 += i
+#     return sum2 - sum1
+#
+# # 差值最小的两个数分别放在两个数组中,有错误
+# def split_group(l):
+#     group1 = list()
+#     group2 = list()
+#     sum_diff = 0
+#     count = 0
+#     while len(l) > 0:
+#         g1 = l.pop()
+#         diff = None
+#         for j in range(len(l)):
+#             if not diff:
+#                 diff = abs(l[j] - g1)
+#                 index = j
+#             elif abs(l[j] - g1) < diff:
+#                 diff = abs(l[j] - g1)
+#                 index = j
+#         g2 = l.pop(index)
+#         if sum_diff * diff >= 0:
+#             group2.append(g1)
+#             group1.append(g2)
+#         else:
+#             group1.append(g1)
+#             group2.append(g2)
+#
+#
+#
+#         sum_diff += diff
+#     return group1, group2
+# l = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+# random_list = [random.randint(0, 1000) for x in range(10)]
+# print random_list
+# print split_group(random_list[:]), 'Diff is ', diff(*split_group(random_list[:]))
+#
+#
+# # 穷举法
+# def enum_split_group(nums):
+#     sum_diff = None
+#     for i in range(1024):
+#         binary_str = bin(i)
+#         format_str = binary_str[2:]
+#         l = map(int, format_str)
+#         bin_sum = 0
+#         for j in l:
+#             bin_sum += j
+#         if bin_sum == 5:
+#             format_str = '00000{0}'.format(format_str)[-10:]
+#             group1 = list()
+#             group2 = list()
+#
+#             for j in range(len(format_str)):
+#                 if int(format_str[j]):
+#                     group1.append(nums[j])
+#                 else:
+#                     group2.append(nums[j])
+#             if not sum_diff:
+#                 sum_diff = abs(diff(group1, group2))
+#                 result_group1, result_group2 = group1, group2
+#             elif abs(diff(group1, group2)) < sum_diff:
+#                 sum_diff = abs(diff(group1, group2))
+#                 result_group1, result_group2 = group1, group2
+#     return result_group1, result_group2, 'Diff is ', sum_diff
+#
+#
+# print enum_split_group(random_list)
+
+# -------------------------------------------------------------------------------------------------------------------
+# 图形界面Tkinter
+
+# from Tkinter import *
+# import tkMessageBox
+#
+# class Application(Frame):
+#     def __init__(self, master=None):
+#         Frame.__init__(self, master)
+#         self.pack()
+#         self.createWidgets()
+#
+#     def createWidgets(self):
+#         self.nameInput = Entry(self)
+#         self.nameInput.pack()
+#         self.alertButton = Button(self, text='Hello', command=self.hello)
+#         self.alertButton.pack()
+#
+#     def hello(self):
+#         name = self.nameInput.get() or 'world'
+#         tkMessageBox.showinfo('Message', 'Hello, %s' % name)
+#
+#
+# app = Application()
+# app.master.title('GUI Test')
+# app.mainloop()
+
+# -------------------------------------------------------------------------------------------------------------------
+# 找零问题,给出找零的金额,和货币的面值list.求有多少种方法
+
+charge = 5
+face_values = [1, 2, 3]
+
+# 两种面额的组合方式
+# count = 0
+# d = dict()
+# for i in range(len(face_values)):
+#     if charge % face_values[i] == 0:
+#         print face_values[i], charge/face_values[i]
+#         count += 1
+#         d[count] = {face_values[i]: charge/face_values[i]}
+#
+#     for n in range(charge/face_values[i]):
+#         for j in range(i+1, len(face_values)):
+#             if (charge - n * face_values[i]) % face_values[j] == 0:
+#                 print face_values[i], n, face_values[j], (charge - n * face_values[i]) / face_values[j]
+#                 count += 1
+#                 d[count] = {face_values[i]: n, face_values[j]: (charge - n * face_values[i]) / face_values[j]}
+#
+#
+# for key, value in d.items():
+#     s = ''
+#     for k, v in value.items():
+#         s += '{0}*{1}+'.format(k, v)
+#     s = s[:-1]
+#     print key, s
+
+count_of_charge = [0 for x in range(len(face_values))]
+
+distinct_count = list()
+
+def odd_charge(charge, face_values, count_of_charge):
+    if charge < 0:
+        # print False, count_of_charge
+        pass
+    elif charge == 0:
+        print True, count_of_charge
+        # distinct_count.append(count_of_charge)
+    elif charge > 0:
+        for i in range(len(face_values)):
+            new_charge = charge - face_values[i]
+            count_of_charge_copy = count_of_charge[:]
+            count_of_charge_copy[i] += 1
+            odd_charge(new_charge, face_values, count_of_charge_copy)
 
 
-
-
-
+odd_charge(charge, face_values, count_of_charge)
 
 
 
