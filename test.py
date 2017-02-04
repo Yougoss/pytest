@@ -1753,6 +1753,7 @@ handle_pi:          处理形如<?instruction>
 # app.mainloop()
 
 # -------------------------------------------------------------------------------------------------------------------
+# 当年某道没做出来的面试题
 # 找零问题,给出找零的金额,和货币的面值list.求有多少种方法
 
 charge = 5
@@ -1786,7 +1787,8 @@ count_of_charge = [0 for x in range(len(face_values))]
 
 distinct_count = list()
 
-def odd_charge(charge, face_values, count_of_charge):
+
+def odd_charge(charge, face_values, count_of_charge, j=0):
     if charge < 0:
         # print False, count_of_charge
         pass
@@ -1794,11 +1796,11 @@ def odd_charge(charge, face_values, count_of_charge):
         print True, count_of_charge
         # distinct_count.append(count_of_charge)
     elif charge > 0:
-        for i in range(len(face_values)):
+        for i in range(j, len(face_values)):    # 从上次递归的i开始防止重复出现。如 5-1-1-1-2和5-2-1-1-1，相同面值的数量是一样的，但是减去的顺序不一样
             new_charge = charge - face_values[i]
-            count_of_charge_copy = count_of_charge[:]
+            count_of_charge_copy = count_of_charge[:]   # 切片取复制一份list，避免都在原list上修改
             count_of_charge_copy[i] += 1
-            odd_charge(new_charge, face_values, count_of_charge_copy)
+            odd_charge(new_charge, face_values, count_of_charge_copy, i)
 
 
 odd_charge(charge, face_values, count_of_charge)
