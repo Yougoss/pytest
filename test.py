@@ -1893,6 +1893,24 @@ UDP:
 
 # -------------------------------------------------------------------------------------------------------------------
 # SMTP发送邮件
+'''
+构造一个邮件对象就是一个Messag对象
+如果构造一个MIMEText对象，就表示一个文本邮件对象
+如果构造一个MIMEImage对象，就表示一个作为附件的图片
+要把多个对象组合起来，就用MIMEMultipart对象
+而MIMEBase可以表示任何对象
+
+它们的继承关系如下：
+Message
+ MIMEBase
+    --MIMEMultipart
+    --MIMENonMultipart
+        --MIMEMessage
+        --MIMEText
+        --MIMEImage
+'''
+
+
 
 # 简单的邮件
 # from email.mime.text import MIMEText
@@ -1960,7 +1978,9 @@ for img_path in img_paths:
         # 设置附件的MIME和文件名
         attachment = MIMEBase('image', img_path.split('.')[-1], filename=img_path.split(os.sep)[-1])
         # 附件必要的头信息
+        # 指示用户代理如何显示附件
         attachment.add_header('Content-Disposition', 'attachment', filename=img_path.split(os.sep)[-1])
+        # 附件的content_id可以用来把附件内嵌到邮件正文里,因为有些邮箱不支持在邮件界面打开外部链接
         attachment.add_header('Content-ID', '<{0}>'.format(img_id))
         img_id += 1
         attachment.add_header('X-Attachment-Id', '0')
