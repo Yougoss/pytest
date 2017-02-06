@@ -1753,6 +1753,7 @@ handle_pi:          处理形如<?instruction>
 # app.mainloop()
 
 # -------------------------------------------------------------------------------------------------------------------
+# 当年某道没做出来的面试题
 # 找零问题,给出找零的金额,和货币的面值list.求有多少种方法
 
 # charge = 5
@@ -1820,10 +1821,27 @@ TCP:
     客户端连接到服务端:
     s.connect(('127.0.0.1', 9999))
 
+<<<<<<< HEAD
     socket对象发送信息:
     s.send(data)
     socket接收信息(1024为每次接收的大小):
     s.recv(1024)
+=======
+
+def odd_charge(charge, face_values, count_of_charge, j=0):
+    if charge < 0:
+        # print False, count_of_charge
+        pass
+    elif charge == 0:
+        print True, count_of_charge
+        # distinct_count.append(count_of_charge)
+    elif charge > 0:
+        for i in range(j, len(face_values)):    # 从上次递归的i开始防止重复出现。如 5-1-1-1-2和5-2-1-1-1，相同面值的数量是一样的，但是减去的顺序不一样
+            new_charge = charge - face_values[i]
+            count_of_charge_copy = count_of_charge[:]   # 切片取复制一份list，避免都在原list上修改
+            count_of_charge_copy[i] += 1
+            odd_charge(new_charge, face_values, count_of_charge_copy, i)
+>>>>>>> 2d231e4294f905cf946c1e0e769fe77cd3d2c381
 
     TCP服务端客户端连接思路:
     1 服务端创建server_socket监听指定端口.
