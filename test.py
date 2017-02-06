@@ -1755,8 +1755,8 @@ handle_pi:          处理形如<?instruction>
 # -------------------------------------------------------------------------------------------------------------------
 # 找零问题,给出找零的金额,和货币的面值list.求有多少种方法
 
-charge = 5
-face_values = [1, 2, 3]
+# charge = 5
+# face_values = [1, 2, 3]
 
 # 两种面额的组合方式
 # count = 0
@@ -1782,32 +1782,189 @@ face_values = [1, 2, 3]
 #     s = s[:-1]
 #     print key, s
 
-count_of_charge = [0 for x in range(len(face_values))]
+# charge = 5
+# face_values = [1, 2, 3]
+# count_of_charge = [0 for x in range(len(face_values))]
+# distinct_count = list()
+#
+# def odd_charge(charge, face_values, count_of_charge, j=0):
+#     if charge < 0:
+#         # print False, count_of_charge
+#         pass
+#     elif charge == 0:
+#         print True, count_of_charge
+#         # distinct_count.append(count_of_charge)
+#     elif charge > 0:
+#         for i in range(j, len(face_values)):
+#             new_charge = charge - face_values[i]
+#             count_of_charge_copy = count_of_charge[:]
+#             count_of_charge_copy[i] += 1
+#             odd_charge(new_charge, face_values, count_of_charge_copy, i)
+#
+#
+# odd_charge(charge, face_values, count_of_charge)
 
-distinct_count = list()
+# -------------------------------------------------------------------------------------------------------------------
+# socket
+'''
+TCP:
+    创建socket对象(ipv4,TCP):
+    s = socket.sockt(socket.AF_INET, socket.SOCKET_STREAM)
 
-def odd_charge(charge, face_values, count_of_charge):
-    if charge < 0:
-        # print False, count_of_charge
-        pass
-    elif charge == 0:
-        print True, count_of_charge
-        # distinct_count.append(count_of_charge)
-    elif charge > 0:
-        for i in range(len(face_values)):
-            new_charge = charge - face_values[i]
-            count_of_charge_copy = count_of_charge[:]
-            count_of_charge_copy[i] += 1
-            odd_charge(new_charge, face_values, count_of_charge_copy)
+    服务端绑定地址和接口并监听:
+    s.bind(('127.0.0.1',9999))
+    s.listen(5)
+    服务端接收客户端的连接(客户端的socket对象和客户端地址):
+    client_sock, client_addr = s.accept()
+
+    客户端连接到服务端:
+    s.connect(('127.0.0.1', 9999))
+
+    socket对象发送信息:
+    s.send(data)
+    socket接收信息(1024为每次接收的大小):
+    s.recv(1024)
+
+    TCP服务端客户端连接思路:
+    1 服务端创建server_socket监听指定端口.
+    2 客户端创建client_socket用connect()向服务器发起连接
+    3 服务端用accept()接收客户端的client_socket对象和客户端的地址端口
+    4 服务端和客户端使用client_socket的send()和recv()进行通信
+UDP:
+    UDP不需要监听和连接
+
+    创建socket对象(ipv4, UDP):
+    s = socket.socket(socket.AF_INET, socket.SOCKET_DGRAM)
+
+    服务端绑定端口:
+    s.bind(('127.0.0.1', 9999))
+
+    socket通信:
+    data, address = s.recvform(1024)
+    s.recv(1024)
+    s.sendto(data, address)
 
 
-odd_charge(charge, face_values, count_of_charge)
+'''
+
+# TCP
+# import socket
+#
+# # 客户端socket访问sina
+# s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)  # AF_INET: IPv4网络协议,    SOCK_STREAM: 有保障的面向连接socket(TCP)
+# s.connect(('www.sina.com.cn', 80))
+# s.send('GET / HTTP/1.1\r\nHost: www.sina.com.cn\r\nConnection: close\r\n\r\n')
+#
+# receive_buffer = []
+# while True:
+#     d = s.recv(1024)
+#     if d:
+#         receive_buffer.append(d)
+#     else:
+#         break
+# s.close()
+# data = ''.join(receive_buffer)
+# head, html = data.split('\r\n\r\n', 1)
+# path = '/Users/xly/Documents/sina.html'
+# with open(path, 'w') as f:
+#     f.write(html)
 
 
+# 客户端服务端见socket_test
 
 
+# -------------------------------------------------------------------------------------------------------------------
+# SMTP发送邮件
+
+# 简单的邮件
+# from email.mime.text import MIMEText
+# # 正文内容
+# msg = MIMEText('Hello, this msg send by python', 'plain', 'utf-8')
+#
+# from_addr = '171538166@qq.com'
+# password = 'tjsdwcgpvzqsbide'
+# smtp_server = 'smtp.qq.com'
+# to_addr = '15800502039@163.com'
+#
+# import smtplib
+# server = smtplib.SMTP_SSL(smtp_server, 465)
+# server.set_debuglevel(1)
+# server.login(from_addr, password)
+# server.sendmail(from_addr, [to_addr], msg.as_string())
+# server.quit()
 
 
+# 一般的邮件
+from email import encoders
+from email.header import Header
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
+from email.mime.base import MIMEBase
+from email.utils import parseaddr, formataddr
+import smtplib
+import os
+
+
+def _format_addr(s):
+    name, addr = parseaddr(s)
+    return formataddr((Header(name, 'utf-8').encode(), addr.encode('utf-8') if isinstance(addr, unicode) else addr))
+
+
+# 发送邮箱的账号密码以及smtp服务器地址, 收件人邮箱地址
+from_addr = '171538166@qq.com'
+password = 'tjsdwcgpvzqsbide'
+smtp_server = ('smtp.qq.com', 465)
+to_addr = '15800502039@163.com'
+
+# # 邮件正文,文本为plain,也可以用html
+# msg = MIMEText('Hello, this msg is sent by python', 'plain', 'utf-8')
+
+# 添加附件用MIMEMultipart, 往其中添加MIMEText作为正文, MIMEBase作为附件
+msg = MIMEMultipart()
+msg.attach(MIMEText(
+    '''<h1>Hello, this msg is sent by python with attachment</h1>
+    <a href='https://www.baidu.com'>Baidu</a><br/>
+    <img src='https://a-ssl.duitang.com/uploads/item/201604/11/20160411124911_xG3rt.png'/><br/>
+    <img src='cid:0'/><br/>
+    <img src='cid:1'/><br/>
+    <img src='cid:2'/><br/>
+    ''', 'html', 'utf-8'))
+img_paths = []
+img_name = ['pic_test.jpg', 'bmp_test.bmp', 'Picture1.bmp']
+relative_path = os.path.join(os.getcwd(), 'img')
+for n in img_name:
+    img_path = os.path.join(relative_path, n)
+    img_paths.append(img_path)
+
+img_id = 0
+for img_path in img_paths:
+    with open(img_path, 'rb') as img:
+        # 设置附件的MIME和文件名
+        attachment = MIMEBase('image', img_path.split('.')[-1], filename=img_path.split(os.sep)[-1])
+        # 附件必要的头信息
+        attachment.add_header('Content-Disposition', 'attachment', filename=img_path.split(os.sep)[-1])
+        attachment.add_header('Content-ID', '<{0}>'.format(img_id))
+        img_id += 1
+        attachment.add_header('X-Attachment-Id', '0')
+        # 附件内容读进来
+        attachment.set_payload(img.read())
+        # 使用base64编码
+        encoders.encode_base64(attachment)
+        # 添加附件到MIMEMultipart
+        msg.attach(attachment)
+
+
+# 邮件的发件人,收件人,主题信息
+msg['From'] = _format_addr(u'xly的qq邮箱 <%s>' % from_addr)
+msg['To'] = _format_addr(u'xly的网易邮箱 <%s>' % to_addr)
+msg['Subject'] = Header(u'SMTP test……', 'utf-8').encode()
+
+
+server = smtplib.SMTP_SSL(*smtp_server)
+server.set_debuglevel(1)
+server.login(from_addr, password)
+server.sendmail(from_addr, [to_addr], msg.as_string())
+server.quit()
 
 
 
